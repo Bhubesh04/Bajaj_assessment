@@ -1,139 +1,144 @@
 import React from 'react';
 import {
   Card,
-  CardContent,
   Typography,
   Box,
-  Chip,
   Button,
   Avatar,
+  Grid,
 } from '@mui/material';
 import {
   LocationOn,
-  LocalHospital,
-  CurrencyRupee,
   WorkOutline,
   Videocam,
+  Home,
 } from '@mui/icons-material';
 
 function DoctorCard({ doctor }) {
-  const extractNumber = (str) => str?.match(/\d+/)?.[0] || '';
+  const fee = doctor.fees?.replace(/[^\d.]/g, '') || 'N/A';
+  const experience = doctor.experience?.match(/\d+/)?.[0] || '?';
 
   return (
-    <Card 
-      sx={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        backgroundColor: 'background.paper',
-        borderRadius: theme => theme.shape.borderRadius,
-        overflow: 'hidden',
-        transition: 'box-shadow 0.3s ease-in-out',
-        '&:hover': {
-          boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.1)',
-        }
-      }} 
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: '#fff',
+        borderRadius: 1,
+        boxShadow: 'none',
+      }}
       data-testid="doctor-card"
     >
-      <Box sx={{ display: 'flex', p: 2, alignItems: 'center' }}>
-        {doctor.photo ? (
-          <Avatar
-            src={doctor.photo}
-            alt={doctor.name}
-            sx={{ width: 60, height: 60, mr: 2, border: '2px solid', borderColor: 'primary.main' }}
-          />
-        ) : (
-          <Avatar
-            sx={{ 
-              width: 60, 
-              height: 60, 
-              mr: 2,
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
-              fontSize: '1.5rem' 
-            }}
-          >
-            {doctor.name_initials || 'Dr'} 
-          </Avatar>
-        )}
-        <Box>
-          <Typography 
-            variant="h6" 
-            component="div" 
-            fontWeight="bold" 
-            color="text.primary"
-            sx={{ lineHeight: 1.3 }}
+      <Grid container spacing={2} alignItems="flex-start">
+        <Grid item xs="auto">
+          {doctor.photo ? (
+            <Avatar
+              src={doctor.photo}
+              alt={doctor.name}
+              sx={{ width: 70, height: 70 }}
+            />
+          ) : (
+            <Avatar
+              sx={{
+                width: 70,
+                height: 70,
+                bgcolor: '#2a7fec',
+                color: '#fff',
+              }}
+            >
+              {doctor.name_initials || 'Dr'}
+            </Avatar>
+          )}
+        </Grid>
+
+        <Grid item xs>
+          <Typography
+            variant="subtitle1"
+            component="div"
+            fontWeight={500}
+            color="#2a7fec"
+            sx={{ mb: 0.5 }}
             data-testid="doctor-name"
           >
             {doctor.name}
           </Typography>
-          <Typography 
-            variant="body2" 
-            color="text.secondary"
+          
+          <Typography
+            variant="body2"
+            color="#333"
+            sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 400 }}
             data-testid="doctor-specialty"
           >
             {doctor.specialities?.map(spec => spec.name).join(', ') || 'Specialist'}
           </Typography>
-        </Box>
-      </Box>
+          
+          <Typography
+            variant="body2"
+            color="#666"
+            sx={{ mb: 1, fontSize: '0.875rem' }}
+            data-testid="doctor-experience"
+          >
+            {experience} yrs exp.
+          </Typography>
 
-      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, color: 'text.secondary' }}>
-          <WorkOutline sx={{ fontSize: 18, mr: 1 }} />
-          <Typography variant="body2" data-testid="doctor-experience">
-            {extractNumber(doctor.experience)} Years Experience
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, color: 'text.secondary' }}>
-          <CurrencyRupee sx={{ fontSize: 18, mr: 1 }} />
-          <Typography variant="body2" data-testid="doctor-fee">
-            ₹{extractNumber(doctor.fees)} Consultation Fee
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-          <LocationOn sx={{ fontSize: 18, mr: 1 }} />
-          <Typography variant="body2" noWrap title={`${doctor.clinic?.name || 'Clinic'}, ${doctor.clinic?.address?.locality || 'Location'}`}>
-            {doctor.clinic?.name || 'Clinic'}, {doctor.clinic?.address?.locality || 'Location'}
-          </Typography>
-        </Box>
-        {doctor.doctor_introduction && (
-          <Typography variant="caption" display="block" mt={1.5} color="text.secondary" sx={{ maxHeight: '40px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {doctor.doctor_introduction}
-          </Typography>
-        )}
-      </CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 0.5 }}>
+            {doctor.in_clinic && (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Home sx={{ fontSize: 18, mr: 0.5, color: '#666' }} />
+                <Typography variant="body2" color="#666" sx={{ fontSize: '0.875rem' }}>
+                  Gulmohar Clinic
+                </Typography>
+              </Box>
+            )}
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', color: '#666' }}>
+            <LocationOn sx={{ fontSize: 18, mr: 0.5 }} />
+            <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+              {doctor.clinic?.address?.locality || 'Varanasi'}
+            </Typography>
+          </Box>
+        </Grid>
 
-      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-          {doctor.in_clinic && (
-            <Chip 
-              icon={<LocalHospital fontSize="small" />} 
-              label="In-Clinic" 
-              size="small" 
-              color="primary"
-              variant="outlined"
-            />
-          )}
-          {doctor.video_consult && (
-             <Chip 
-              icon={<Videocam fontSize="small" />} 
-              label="Video Consult" 
-              size="small" 
-              color="primary"
-              variant="outlined"
-            />
-          )}
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
-          Book Appointment
-        </Button>
-      </Box>
+        <Grid item xs={12} md="auto" sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: { xs: 'flex-start', md: 'flex-end' }, 
+          mt: { xs: 2, md: 0 },
+          justifyContent: 'flex-start'
+        }}>
+          <Typography
+            variant="subtitle1"
+            fontWeight={500}
+            color="#333"
+            sx={{ mb: 1 }}
+            data-testid="doctor-fee"
+          >
+            ₹ {fee}
+          </Typography>
+          
+          <Button
+            variant="outlined"
+            sx={{ 
+              borderColor: '#2a7fec', 
+              color: '#2a7fec',
+              textTransform: 'none',
+              borderRadius: 1,
+              py: 0.5,
+              px: 2,
+              fontSize: '0.875rem',
+              minWidth: '140px',
+              '&:hover': {
+                borderColor: '#1a6edb',
+                backgroundColor: 'rgba(42, 127, 236, 0.04)'
+              }
+            }}
+          >
+            Book Appointment
+          </Button>
+        </Grid>
+      </Grid>
     </Card>
   );
 }
 
-export default DoctorCard; 
+export default DoctorCard;

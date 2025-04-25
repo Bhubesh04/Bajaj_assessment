@@ -14,19 +14,29 @@ import {
   TextField,
   InputAdornment,
   Divider,
+  Button,
+  IconButton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DoctorCard from './DoctorCard';
 
 function DoctorListing() {
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [specialtySearchQuery, setSpecialtySearchQuery] = useState('');
   const [consultationType, setConsultationType] = useState('all');
   const [selectedSpecialties, setSelectedSpecialties] = useState([]);
   const [sortBy, setSortBy] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({
+    sortBy: true,
+    specialties: true,
+    consultation: true,
+  });
 
   // Fetch doctors data from API
   useEffect(() => {
@@ -40,7 +50,6 @@ function DoctorListing() {
         }
         const data = await response.json();
         setDoctors(data);
-        setFilteredDoctors(data);
       } catch (err) {
         console.error("Fetch error: ", err);
         setError(err.message || 'Failed to fetch doctors data.');
@@ -53,15 +62,20 @@ function DoctorListing() {
   }, []);
 
   // Get unique specialties from doctors data
-  const specialties = [...new Set(doctors.flatMap(doctor => 
+  const allSpecialties = [...new Set(doctors.flatMap(doctor => 
     doctor.specialities.map(spec => spec.name)
   ))].sort();
+
+  // Filter specialties based on search
+  const filteredSpecialties = allSpecialties.filter(spec =>
+    spec.toLowerCase().includes(specialtySearchQuery.toLowerCase())
+  );
 
   // Filter and sort doctors based on selected filters and searchQuery prop
   useEffect(() => {
     let filtered = [...doctors];
 
-    // Filter by search query
+    // Filter by top search query (doctor name)
     if (searchQuery) {
       filtered = filtered.filter(doctor =>
         doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -85,8 +99,8 @@ function DoctorListing() {
     // Sort doctors
     if (sortBy === 'fees') {
       filtered.sort((a, b) => {
-        const feeA = parseInt(a.fees?.replace(/[^0-9]/g, '') || '0');
-        const feeB = parseInt(b.fees?.replace(/[^0-9]/g, '') || '0');
+        const feeA = parseInt(a.fees?.replace(/[^0-9]/g, '') || '999999');
+        const feeB = parseInt(b.fees?.replace(/[^0-9]/g, '') || '999999');
         return feeA - feeB;
       });
     } else if (sortBy === 'experience') {
@@ -108,6 +122,20 @@ function DoctorListing() {
     );
   };
 
+  const handleClearAllFilters = () => {
+    setSortBy('');
+    setConsultationType('all');
+    setSelectedSpecialties([]);
+    setSpecialtySearchQuery('');
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
@@ -125,85 +153,142 @@ function DoctorListing() {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      {/* Header Area: Title + Search */}
-      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4" component="h1">
-          Find Your Doctor
-        </Typography>
-        <TextField
-          label="Search by name..."
-          variant="outlined"
-          size="small"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{ minWidth: '300px' }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon color="action" />
-              </InputAdornment>
-            ),
-          }}
-          data-testid="autocomplete-input"
-        />
-      </Box>
-
+    <Box sx={{ flexGrow: 1, bgcolor: '#f5f5f7' }}>
       {/* Main Content: Filters + Results */}
-      <Grid container spacing={4}>
+      <Grid container spacing={0}>
         {/* Filters Panel (Left Column) */}
-        <Grid item xs={12} md={3}>
-          <Paper sx={{ p: 2.5, position: 'sticky', top: '20px' }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-              Filters
-            </Typography>
-            
-            {/* Sort By Section */}
-            <Box mb={3}>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Sort By
+        <Grid item xs={12} md={3} sx={{ bgcolor: '#fff', px: 0 }}>
+          {/* Sort By Section */}
+          <Box 
+            sx={{ 
+              p: 2, 
+              borderBottom: '1px solid #eee',
+              cursor: 'pointer'
+            }}
+            onClick={() => toggleSection('sortBy')}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+                Sort by
               </Typography>
-              <FormControl component="fieldset" size="small">
+              <KeyboardArrowDownIcon 
+                sx={{ 
+                  transform: expandedSections.sortBy ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s'
+                }} 
+              />
+            </Box>
+          </Box>
+          
+          {expandedSections.sortBy && (
+            <Box sx={{ p: 2, pt: 1 }}>
+              <FormControl component="fieldset" size="small" sx={{ width: '100%' }}>
                 <RadioGroup
                   aria-label="sort-by"
                   name="sort-by-group"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  <FormControlLabel value="fees" control={<Radio size="small" />} label="Fees (Low to High)" data-testid="sort-fees" />
-                  <FormControlLabel value="experience" control={<Radio size="small" />} label="Experience (High to Low)" data-testid="sort-experience" />
+                  <FormControlLabel 
+                    value="fees" 
+                    control={<Radio size="small" sx={{ color: '#888' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Price: Low-High</Typography>}
+                    data-testid="sort-fees" 
+                  />
+                  <FormControlLabel 
+                    value="experience" 
+                    control={<Radio size="small" sx={{ color: '#888' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Experience- Most Experienced first</Typography>}
+                    data-testid="sort-experience" 
+                  />
                 </RadioGroup>
               </FormControl>
             </Box>
-            <Divider sx={{ my: 2 }} />
+          )}
 
-            {/* Consultation Mode Section */}
-            <Box mb={3}>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom data-testid="filter-header-moc">
-                Consultation Mode
+          {/* Filters Section Header */}
+          <Box sx={{ 
+            p: 2,
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            borderBottom: '1px solid #eee',
+            borderTop: '1px solid #eee'
+          }}>
+            <Typography variant="subtitle2" fontWeight={500} color="text.primary">
+              Filters
+            </Typography>
+            <Button
+              size="small"
+              onClick={handleClearAllFilters}
+              sx={{ 
+                textTransform: 'none', 
+                color: '#2a7fec', 
+                fontSize: '0.75rem',
+                p: 0,
+                minWidth: 'auto'
+              }}
+            >
+              Clear All
+            </Button>
+          </Box>
+
+          {/* Specialties Section */}
+          <Box 
+            sx={{ 
+              p: 2, 
+              borderBottom: '1px solid #eee',
+              cursor: 'pointer'
+            }}
+            onClick={() => toggleSection('specialties')}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+                Specialities
               </Typography>
-              <FormControl component="fieldset" size="small">
-                <RadioGroup
-                  aria-label="consultation-mode"
-                  name="consultation-mode-group"
-                  value={consultationType}
-                  onChange={(e) => setConsultationType(e.target.value)}
-                >
-                  <FormControlLabel value="all" control={<Radio size="small" />} label="All" />
-                  <FormControlLabel value="video" control={<Radio size="small" />} label="Video Consult" data-testid="filter-video-consult" />
-                  <FormControlLabel value="clinic" control={<Radio size="small" />} label="In-Clinic" data-testid="filter-in-clinic" />
-                </RadioGroup>
-              </FormControl>
+              <KeyboardArrowDownIcon 
+                sx={{ 
+                  transform: expandedSections.specialties ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s'
+                }} 
+              />
             </Box>
-            <Divider sx={{ my: 2 }} />
-
-            {/* Specialties Section */}
-            <Box>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom data-testid="filter-header-speciality">
-                Specialties
-              </Typography>
-              <FormGroup sx={{ maxHeight: 300, overflowY: 'auto', pr: 1 }}>
-                {specialties.map((specialty) => (
+          </Box>
+          
+          {expandedSections.specialties && (
+            <Box sx={{ p: 2, pt: 1 }}>
+              <TextField
+                placeholder="Search specialties"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={specialtySearchQuery}
+                onChange={(e) => setSpecialtySearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" sx={{ color: '#888' }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: specialtySearchQuery ? (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={() => setSpecialtySearchQuery('')}>
+                        <ClearIcon fontSize="small" sx={{ color: '#888' }} />
+                      </IconButton>
+                    </InputAdornment>
+                  ) : null,
+                  sx: {
+                    fontSize: '0.875rem',
+                    borderRadius: '4px',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ddd'
+                    }
+                  }
+                }}
+                sx={{ mb: 1.5 }}
+              />
+              <FormGroup sx={{ maxHeight: 200, overflowY: 'auto', pr: 1 }}>
+                {filteredSpecialties.length > 0 ? filteredSpecialties.map((specialty) => (
                   <FormControlLabel
                     key={specialty}
                     control={
@@ -211,28 +296,84 @@ function DoctorListing() {
                         size="small"
                         checked={selectedSpecialties.includes(specialty)}
                         onChange={() => handleSpecialtyChange(specialty)}
+                        sx={{ color: '#888' }}
                       />
                     }
-                    label={specialty}
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>{specialty}</Typography>}
                     data-testid={`filter-specialty-${specialty.replace(/[^a-zA-Z]/g, '')}`}
-                    sx={{ mr: 0 }}
+                    sx={{ mr: 0, mb: 0.5 }}
                   />
-                ))}
+                )) : (
+                  <Typography variant="caption" color="text.secondary">No matching specialties</Typography>
+                )}
               </FormGroup>
             </Box>
-          </Paper>
+          )}
+
+          {/* Consultation Mode Section */}
+          <Box 
+            sx={{ 
+              p: 2, 
+              borderBottom: '1px solid #eee',
+              cursor: 'pointer'
+            }}
+            onClick={() => toggleSection('consultation')}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+                Mode of consultation
+              </Typography>
+              <KeyboardArrowDownIcon 
+                sx={{ 
+                  transform: expandedSections.consultation ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s'
+                }} 
+              />
+            </Box>
+          </Box>
+          
+          {expandedSections.consultation && (
+            <Box sx={{ p: 2, pt: 1 }}>
+              <FormControl component="fieldset" size="small" sx={{ width: '100%' }}>
+                <RadioGroup
+                  aria-label="consultation-mode"
+                  name="consultation-mode-group"
+                  value={consultationType}
+                  onChange={(e) => setConsultationType(e.target.value)}
+                >
+                  <FormControlLabel 
+                    value="all" 
+                    control={<Radio size="small" sx={{ color: '#888' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>All</Typography>}
+                  />
+                  <FormControlLabel 
+                    value="video" 
+                    control={<Radio size="small" sx={{ color: '#888' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Video Consultation</Typography>} 
+                    data-testid="filter-video-consult" 
+                  />
+                  <FormControlLabel 
+                    value="clinic" 
+                    control={<Radio size="small" sx={{ color: '#888' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>In-clinic Consultation</Typography>} 
+                    data-testid="filter-in-clinic" 
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+          )}
         </Grid>
 
         {/* Doctor List (Right Column) */}
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={9} sx={{ bgcolor: '#f5f5f7', p: 2 }}>
           {filteredDoctors.length > 0 ? (
-            <Grid container spacing={3}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {filteredDoctors.map((doctor) => (
-                <Grid item xs={12} sm={6} lg={4} key={doctor.id}>
+                <Box key={doctor.id}>
                   <DoctorCard doctor={doctor} />
-                </Grid>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           ) : (
             <Box textAlign="center" mt={5}>
               <Typography color="text.secondary">

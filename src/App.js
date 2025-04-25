@@ -10,83 +10,76 @@ import SearchIcon from '@mui/icons-material/Search';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#007bff', // A vibrant blue
-      contrastText: '#ffffff', // White text on primary
+      main: '#2a7fec', // Match exact blue from image
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#6c757d', // A neutral secondary color
+      main: '#6c757d',
     },
     background: {
-      default: '#f8f9fa', // Very light grey background
-      paper: '#ffffff',   // White for paper elements like cards/filters
+      default: '#f5f5f7', // Light grey background
+      paper: '#ffffff',
     },
     text: {
-      primary: '#343a40', // Dark grey for primary text
-      secondary: '#6c757d', // Lighter grey for secondary text
+      primary: '#343a40',
+      secondary: '#6c757d',
     },
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif', // Modern font stack
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
-      fontWeight: 600, // Bolder headings
+      fontWeight: 600,
       color: '#343a40',
     },
     h6: {
       fontWeight: 600,
     },
     button: {
-      textTransform: 'none', // No uppercase buttons
+      textTransform: 'none',
       fontWeight: 600,
     },
   },
   shape: {
-    borderRadius: 8, // Slightly more rounded corners
+    borderRadius: 4,
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          boxShadow: 'none', // No default shadow on buttons
+          boxShadow: 'none',
           '&:hover': {
             boxShadow: 'none',
           },
         },
         containedPrimary: {
           '&:hover': {
-            backgroundColor: '#0056b3', // Darker blue on hover
+            backgroundColor: '#0056b3',
           },
         },
         outlinedPrimary: {
-          borderColor: '#007bff',
+          borderColor: '#2a7fec',
           '&:hover': {
-            backgroundColor: 'rgba(0, 123, 255, 0.04)', // Light blue background on hover
+            backgroundColor: 'rgba(42, 127, 236, 0.04)',
             borderColor: '#0056b3',
           },
         },
       },
     },
-    MuiPaper: {
+    MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)', // Subtle shadow for paper
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#ced4da',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#adb5bd',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#2a7fec',
+            borderWidth: '1px',
+          },
         },
       },
-    },
-    MuiOutlinedInput: {
-        styleOverrides: {
-            root: {
-                '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#ced4da', // Lighter border for inputs
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#adb5bd',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#007bff', // Blue border on focus
-                    borderWidth: '1px', // Ensure consistent border width
-                },
-            },
-        },
     },
   },
 });
@@ -96,69 +89,70 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        {/* Top Blue Search Bar - Styled to match image */}
+        {/* Top Blue Search Bar */}
         <AppBar 
           position="static" 
           sx={{ 
-            backgroundColor: '#2a7fec', // Exact blue from image sample
-            boxShadow: 'none', // No shadow on the bar itself
+            backgroundColor: '#2a7fec',
+            boxShadow: 'none',
           }}
         >
-          <Container maxWidth="lg"> {/* Center content */}
+          <Container maxWidth="lg">
             <Toolbar disableGutters sx={{ justifyContent: 'center', py: 1 }}>
-                <TextField
-                  placeholder="Search Symptoms, Doctors, Specialists, Clinics"
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    backgroundColor: 'white',
-                    borderRadius: 1,
-                    width: '70%', // Adjust width to approximate image
-                    maxWidth: '800px',
-                    '& .MuiOutlinedInput-root': {
-                        paddingRight: 0, // Remove padding for icon button
-                      '& fieldset': {
-                        borderColor: 'transparent', // No border
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: 'transparent',
-                      },
+              <TextField
+                placeholder="Search Symptoms, Doctors, Specialists, Clinics"
+                variant="outlined"
+                size="small"
+                sx={{
+                  backgroundColor: 'white',
+                  borderRadius: 1,
+                  width: { xs: '90%', sm: '70%' },
+                  maxWidth: '600px',
+                  '& .MuiOutlinedInput-root': {
+                    paddingRight: 0,
+                    '& fieldset': {
+                      borderColor: 'transparent',
                     },
-                    '& .MuiOutlinedInput-input': {
-                        padding: '8.5px 14px', // Match default small TextField padding
-                    }
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {/* Search Icon Button (Optional clickable) */}
-                         <Box sx={{ 
-                             backgroundColor: 'primary.main', // Same blue as bar
-                             display: 'flex', 
-                             alignItems: 'center', 
-                             justifyContent: 'center',
-                             padding: '8px',
-                             borderTopRightRadius: (theme) => theme.shape.borderRadius,
-                             borderBottomRightRadius: (theme) => theme.shape.borderRadius,
-                             marginRight: '-1px' // Overlap slightly
-                         }}>
-                            <SearchIcon sx={{ color: 'white' }} />
-                         </Box>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                    '&:hover fieldset': {
+                      borderColor: 'transparent',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'transparent',
+                    },
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    padding: '8.5px 14px',
+                    fontSize: '0.875rem',
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Box sx={{ 
+                        backgroundColor: '#2a7fec',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        padding: '9px',
+                        borderTopRightRadius: 4,
+                        borderBottomRightRadius: 4,
+                      }}>
+                        <SearchIcon sx={{ color: 'white' }} />
+                      </Box>
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Toolbar>
           </Container>
         </AppBar>
         
         {/* Main Content Area */}
-        <Container maxWidth="lg" sx={{ pt: 3 }}> {/* Reduced top padding */}
-          <DoctorListing /> 
-        </Container>
+        <Box sx={{ bgcolor: '#f5f5f7' }}>
+          <Container maxWidth="lg" disableGutters>
+            <DoctorListing /> 
+          </Container>
+        </Box>
       </Router>
     </ThemeProvider>
   );
