@@ -204,6 +204,7 @@ function AnimatedStar({ top, left, size, delay, duration }) {
 
 function App() {
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Generate stars data
   const stars = Array.from({ length: 30 }, (_, i) => ({
@@ -214,6 +215,17 @@ function App() {
     delay: Math.random() * 3000, // 0-3s delay
     duration: Math.random() * 3000 + 2000 // 2-5s duration
   }));
+
+  // Handle search input change
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // Handle search button click
+  const handleSearchSubmit = () => {
+    // This would be for additional search logic if needed
+    console.log("Search submitted:", searchQuery);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -278,6 +290,8 @@ function App() {
                   variant="outlined"
                   size="small"
                   fullWidth
+                  value={searchQuery}
+                  onChange={handleSearchChange}
                   sx={{
                     backgroundColor: 'rgba(30, 35, 50, 0.5)',
                     borderRadius: 2,
@@ -320,6 +334,7 @@ function App() {
                   }}
                 >
                   <IconButton
+                    onClick={handleSearchSubmit}
                     sx={{
                       backgroundColor: 'rgba(85, 130, 230, 0.9)',
                       height: '100%',
@@ -358,7 +373,7 @@ function App() {
               maxWidth: { xs: '100%', lg: '1280px' }
             }}
           >
-            <DoctorListing /> 
+            <DoctorListing searchQuery={searchQuery} /> 
           </Container>
         </Box>
       </Router>

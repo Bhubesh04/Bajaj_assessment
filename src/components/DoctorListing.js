@@ -28,11 +28,10 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import TuneIcon from '@mui/icons-material/Tune';
 import DoctorCard from './DoctorCard';
 
-function DoctorListing() {
+function DoctorListing({ searchQuery }) {
   const theme = useTheme();
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [specialtySearchQuery, setSpecialtySearchQuery] = useState('');
   const [consultationType, setConsultationType] = useState('all');
   const [selectedSpecialties, setSelectedSpecialties] = useState([]);
@@ -80,7 +79,7 @@ function DoctorListing() {
 
   // Get unique specialties from doctors data
   const allSpecialties = [...new Set(doctors.flatMap(doctor => 
-    doctor.specialities.map(spec => spec.name)
+    doctor.specialities?.map(spec => spec.name) || []
   ))].sort();
 
   // Filter specialties based on search
@@ -92,7 +91,7 @@ function DoctorListing() {
   useEffect(() => {
     let filtered = [...doctors];
 
-    // Filter by top search query (doctor name)
+    // Filter by top search query (doctor name) - now using the prop from App.js
     if (searchQuery) {
       filtered = filtered.filter(doctor =>
         doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
