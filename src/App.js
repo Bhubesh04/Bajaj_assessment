@@ -99,57 +99,82 @@ function App() {
         >
           <Container maxWidth="lg">
             <Toolbar disableGutters sx={{ justifyContent: 'center', py: 1 }}>
-              <TextField
-                placeholder="Search Symptoms, Doctors, Specialists, Clinics"
-                variant="outlined"
-                size="small"
+              <Box
                 sx={{
-                  backgroundColor: 'white',
-                  borderRadius: 1,
+                  display: 'flex',
                   width: { xs: '90%', sm: '70%' },
                   maxWidth: '600px',
-                  '& .MuiOutlinedInput-root': {
-                    paddingRight: 0,
-                    '& fieldset': {
-                      borderColor: 'transparent',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'transparent',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'transparent',
-                    },
-                  },
-                  '& .MuiOutlinedInput-input': {
-                    padding: '8.5px 14px',
-                    fontSize: '0.875rem',
-                  }
+                  position: 'relative',
                 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Box sx={{ 
-                        backgroundColor: '#2a7fec',
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        padding: '9px',
-                        borderTopRightRadius: 4,
-                        borderBottomRightRadius: 4,
-                      }}>
-                        <SearchIcon sx={{ color: 'white' }} />
-                      </Box>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              >
+                <TextField
+                  placeholder="Search Symptoms, Doctors, Specialists, Clinics"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    backgroundColor: 'white',
+                    borderRadius: 1,
+                    '& .MuiOutlinedInput-root': {
+                      paddingRight: 0,
+                      '& fieldset': {
+                        borderColor: 'transparent',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'transparent',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'transparent',
+                      },
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      padding: '8.5px 14px',
+                      fontSize: '0.875rem',
+                    },
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      backgroundColor: '#2a7fec',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100%',
+                      width: '40px',
+                      borderTopRightRadius: 4,
+                      borderBottomRightRadius: 4,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <SearchIcon sx={{ color: 'white' }} />
+                  </Box>
+                </Box>
+              </Box>
             </Toolbar>
           </Container>
         </AppBar>
         
         {/* Main Content Area */}
         <Box sx={{ bgcolor: '#f5f5f7' }}>
-          <Container maxWidth="lg" disableGutters>
+          <Container 
+            maxWidth="xl" 
+            disableGutters
+            sx={{
+              px: { xs: 0, sm: 1, md: 2 },
+              mx: 'auto',
+              maxWidth: { xs: '100%', lg: '1280px' }
+            }}
+          >
             <DoctorListing /> 
           </Container>
         </Box>

@@ -156,32 +156,33 @@ function DoctorListing() {
     <Box sx={{ flexGrow: 1, bgcolor: '#f5f5f7' }}>
       {/* Main Content: Filters + Results */}
       <Grid container spacing={0}>
-        {/* Filters Panel (Left Column) */}
-        <Grid item xs={12} md={3} sx={{ bgcolor: '#fff', px: 0 }}>
+        {/* Filters Panel (Left Column) - Make it much narrower */}
+        <Grid item xs={12} md={2.5} lg={2} sx={{ bgcolor: '#fff', px: 0, maxWidth: { md: '220px' } }}>
           {/* Sort By Section */}
           <Box 
             sx={{ 
-              p: 2, 
+              p: 1.5, 
               borderBottom: '1px solid #eee',
               cursor: 'pointer'
             }}
             onClick={() => toggleSection('sortBy')}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
                 Sort by
               </Typography>
               <KeyboardArrowDownIcon 
                 sx={{ 
                   transform: expandedSections.sortBy ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  fontSize: '1.2rem'
                 }} 
               />
             </Box>
           </Box>
           
           {expandedSections.sortBy && (
-            <Box sx={{ p: 2, pt: 1 }}>
+            <Box sx={{ p: 1.5, pt: 1 }}>
               <FormControl component="fieldset" size="small" sx={{ width: '100%' }}>
                 <RadioGroup
                   aria-label="sort-by"
@@ -191,15 +192,17 @@ function DoctorListing() {
                 >
                   <FormControlLabel 
                     value="fees" 
-                    control={<Radio size="small" sx={{ color: '#888' }} />} 
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Price: Low-High</Typography>}
+                    control={<Radio size="small" sx={{ color: '#888', padding: '4px' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333' }}>Price: Low-High</Typography>}
                     data-testid="sort-fees" 
+                    sx={{ my: 0.25 }}
                   />
                   <FormControlLabel 
                     value="experience" 
-                    control={<Radio size="small" sx={{ color: '#888' }} />} 
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Experience- Most Experienced first</Typography>}
+                    control={<Radio size="small" sx={{ color: '#888', padding: '4px' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333', lineHeight: 1.2 }}>Experience- Most Experienced first</Typography>}
                     data-testid="sort-experience" 
+                    sx={{ my: 0.25, pr: 1 }}
                   />
                 </RadioGroup>
               </FormControl>
@@ -208,14 +211,14 @@ function DoctorListing() {
 
           {/* Filters Section Header */}
           <Box sx={{ 
-            p: 2,
+            p: 1.5,
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
             borderBottom: '1px solid #eee',
             borderTop: '1px solid #eee'
           }}>
-            <Typography variant="subtitle2" fontWeight={500} color="text.primary">
+            <Typography variant="subtitle2" fontWeight={500} color="text.primary" sx={{ fontSize: '0.85rem' }}>
               Filters
             </Typography>
             <Button
@@ -224,9 +227,10 @@ function DoctorListing() {
               sx={{ 
                 textTransform: 'none', 
                 color: '#2a7fec', 
-                fontSize: '0.75rem',
+                fontSize: '0.7rem',
                 p: 0,
-                minWidth: 'auto'
+                minWidth: 'auto',
+                fontWeight: 400
               }}
             >
               Clear All
@@ -236,27 +240,28 @@ function DoctorListing() {
           {/* Specialties Section */}
           <Box 
             sx={{ 
-              p: 2, 
+              p: 1.5, 
               borderBottom: '1px solid #eee',
               cursor: 'pointer'
             }}
             onClick={() => toggleSection('specialties')}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
                 Specialities
               </Typography>
               <KeyboardArrowDownIcon 
                 sx={{ 
                   transform: expandedSections.specialties ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  fontSize: '1.2rem'
                 }} 
               />
             </Box>
           </Box>
           
           {expandedSections.specialties && (
-            <Box sx={{ p: 2, pt: 1 }}>
+            <Box sx={{ p: 1.5, pt: 1 }}>
               <TextField
                 placeholder="Search specialties"
                 variant="outlined"
@@ -267,27 +272,30 @@ function DoctorListing() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SearchIcon fontSize="small" sx={{ color: '#888' }} />
+                      <SearchIcon fontSize="small" sx={{ color: '#888', fontSize: '0.9rem' }} />
                     </InputAdornment>
                   ),
                   endAdornment: specialtySearchQuery ? (
                     <InputAdornment position="end">
                       <IconButton size="small" onClick={() => setSpecialtySearchQuery('')}>
-                        <ClearIcon fontSize="small" sx={{ color: '#888' }} />
+                        <ClearIcon fontSize="small" sx={{ color: '#888', fontSize: '0.9rem' }} />
                       </IconButton>
                     </InputAdornment>
                   ) : null,
                   sx: {
-                    fontSize: '0.875rem',
+                    fontSize: '0.8rem',
                     borderRadius: '4px',
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: '#ddd'
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      padding: '7px 10px 7px 0'
                     }
                   }
                 }}
                 sx={{ mb: 1.5 }}
               />
-              <FormGroup sx={{ maxHeight: 200, overflowY: 'auto', pr: 1 }}>
+              <FormGroup sx={{ maxHeight: 180, overflowY: 'auto', pr: 1 }}>
                 {filteredSpecialties.length > 0 ? filteredSpecialties.map((specialty) => (
                   <FormControlLabel
                     key={specialty}
@@ -296,12 +304,12 @@ function DoctorListing() {
                         size="small"
                         checked={selectedSpecialties.includes(specialty)}
                         onChange={() => handleSpecialtyChange(specialty)}
-                        sx={{ color: '#888' }}
+                        sx={{ color: '#888', padding: '3px' }}
                       />
                     }
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>{specialty}</Typography>}
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333' }}>{specialty}</Typography>}
                     data-testid={`filter-specialty-${specialty.replace(/[^a-zA-Z]/g, '')}`}
-                    sx={{ mr: 0, mb: 0.5 }}
+                    sx={{ mr: 0, mb: 0.2, ml: -0.5 }}
                   />
                 )) : (
                   <Typography variant="caption" color="text.secondary">No matching specialties</Typography>
@@ -313,27 +321,28 @@ function DoctorListing() {
           {/* Consultation Mode Section */}
           <Box 
             sx={{ 
-              p: 2, 
+              p: 1.5, 
               borderBottom: '1px solid #eee',
               cursor: 'pointer'
             }}
             onClick={() => toggleSection('consultation')}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500 }}>
+              <Typography variant="subtitle2" color="text.primary" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
                 Mode of consultation
               </Typography>
               <KeyboardArrowDownIcon 
                 sx={{ 
                   transform: expandedSections.consultation ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  fontSize: '1.2rem'
                 }} 
               />
             </Box>
           </Box>
           
           {expandedSections.consultation && (
-            <Box sx={{ p: 2, pt: 1 }}>
+            <Box sx={{ p: 1.5, pt: 1 }}>
               <FormControl component="fieldset" size="small" sx={{ width: '100%' }}>
                 <RadioGroup
                   aria-label="consultation-mode"
@@ -343,20 +352,23 @@ function DoctorListing() {
                 >
                   <FormControlLabel 
                     value="all" 
-                    control={<Radio size="small" sx={{ color: '#888' }} />} 
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>All</Typography>}
+                    control={<Radio size="small" sx={{ color: '#888', padding: '4px' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333' }}>All</Typography>}
+                    sx={{ my: 0.25 }}
                   />
                   <FormControlLabel 
                     value="video" 
-                    control={<Radio size="small" sx={{ color: '#888' }} />} 
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>Video Consultation</Typography>} 
-                    data-testid="filter-video-consult" 
+                    control={<Radio size="small" sx={{ color: '#888', padding: '4px' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333' }}>Video Consultation</Typography>} 
+                    data-testid="filter-video-consult"
+                    sx={{ my: 0.25 }}
                   />
                   <FormControlLabel 
                     value="clinic" 
-                    control={<Radio size="small" sx={{ color: '#888' }} />} 
-                    label={<Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#333' }}>In-clinic Consultation</Typography>} 
-                    data-testid="filter-in-clinic" 
+                    control={<Radio size="small" sx={{ color: '#888', padding: '4px' }} />} 
+                    label={<Typography variant="body2" sx={{ fontSize: '0.8rem', color: '#333' }}>In-clinic Consultation</Typography>} 
+                    data-testid="filter-in-clinic"
+                    sx={{ my: 0.25, pr: 1 }}
                   />
                 </RadioGroup>
               </FormControl>
@@ -365,9 +377,21 @@ function DoctorListing() {
         </Grid>
 
         {/* Doctor List (Right Column) */}
-        <Grid item xs={12} md={9} sx={{ bgcolor: '#f5f5f7', p: 2 }}>
+        <Grid item xs={12} md={9.5} lg={10} sx={{ 
+          bgcolor: '#f5f5f7', 
+          p: 2, 
+          pl: { md: 3 },
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
           {filteredDoctors.length > 0 ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 2,
+              width: '100%',
+              maxWidth: '900px'
+            }}>
               {filteredDoctors.map((doctor) => (
                 <Box key={doctor.id}>
                   <DoctorCard doctor={doctor} />

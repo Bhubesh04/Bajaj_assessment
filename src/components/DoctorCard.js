@@ -25,6 +25,7 @@ function DoctorCard({ doctor }) {
         backgroundColor: '#fff',
         borderRadius: 1,
         boxShadow: 'none',
+        width: '100%'
       }}
       data-testid="doctor-card"
     >
@@ -50,7 +51,7 @@ function DoctorCard({ doctor }) {
           )}
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs sx={{ flexGrow: 1 }}>
           <Typography
             variant="subtitle1"
             component="div"
@@ -104,13 +105,14 @@ function DoctorCard({ doctor }) {
           flexDirection: 'column', 
           alignItems: { xs: 'flex-start', md: 'flex-end' }, 
           mt: { xs: 2, md: 0 },
-          justifyContent: 'flex-start'
+          justifyContent: 'flex-start',
+          minWidth: { md: '150px' }
         }}>
           <Typography
             variant="subtitle1"
             fontWeight={500}
             color="#333"
-            sx={{ mb: 1 }}
+            sx={{ mb: 1, fontSize: '1rem' }}
             data-testid="doctor-fee"
           >
             ₹ {fee}
@@ -127,6 +129,7 @@ function DoctorCard({ doctor }) {
               px: 2,
               fontSize: '0.875rem',
               minWidth: '140px',
+              fontWeight: 500,
               '&:hover': {
                 borderColor: '#1a6edb',
                 backgroundColor: 'rgba(42, 127, 236, 0.04)'
